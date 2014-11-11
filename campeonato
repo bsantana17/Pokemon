@@ -1,0 +1,140 @@
+package modelo;
+
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.Collections;
+
+public class campeonato {  
+    
+    public ArrayList<Equipo> primeraRonda = new ArrayList<>();
+    public ArrayList<Equipo> octavosDeFinal = new ArrayList<>();
+    public ArrayList<Equipo> cuartosDeFinal = new ArrayList<>();
+    public ArrayList<Equipo> semiFinal = new ArrayList<>();
+    public ArrayList<Equipo> finales = new ArrayList<>();
+    public ArrayList<Equipo> podio = new ArrayList<>(); 
+    
+    public void definirOctavosDeFinal() throws FileNotFoundException{
+        
+        for (int i = 0; i < 32; i+=2) {
+            Combate combate=new Combate(primeraRonda.get(i), primeraRonda.get(i+1));
+            combate.CombateMaquinaVSMaquina(true);
+            if (combate.haGanadoElCombate(primeraRonda.get(i)).equals("victoria")) {
+                octavosDeFinal.add(primeraRonda.get(i));
+            }
+            else{
+                octavosDeFinal.add(primeraRonda.get(i+1));
+            }
+        }        
+        definirCuartosDeFinal();        
+    }
+	
+    public void definirCuartosDeFinal() throws FileNotFoundException{
+        
+        for (int i = 0; i < 16; i+=2) {
+            Combate combate=new Combate(octavosDeFinal.get(i), octavosDeFinal.get(i+1));
+            combate.CombateMaquinaVSMaquina(true);
+            if (combate.haGanadoElCombate(octavosDeFinal.get(i)).equals("victoria")) {
+                cuartosDeFinal.add(octavosDeFinal.get(i));
+            }
+            else{
+                cuartosDeFinal.add(octavosDeFinal.get(i+1));
+            }
+        }        
+        definirSemiFinal();        
+    }
+    
+    private void definirSemiFinal() throws FileNotFoundException{
+        
+        for (int i = 0; i < 8; i+=2) {
+            Combate combate=new Combate(cuartosDeFinal.get(i), cuartosDeFinal.get(i+1));
+            combate.CombateMaquinaVSMaquina(true);
+            if (combate.haGanadoElCombate(cuartosDeFinal.get(i).getPais()).equals("victoria")) {
+                semiFinal.add(cuartosDeFinal.get(i));
+            }
+            else{
+                semiFinal.add(cuartosDeFinal.get(i+1));
+            }
+        }
+        definirFinal();        
+    }
+    
+    private void definirFinal() throws FileNotFoundException{
+        for (int i = 0; i < 4; i+=2) {
+            Combate combate=new Combate(semiFinal.get(i), semiFinal.get(i+1));
+            combate.CombateMaquinaVSMaquina(true);
+            if (combate.haGanadoElCombate(semiFinal.get(i)).equals("victoria")) {
+                finales.add(semiFinal.get(i));   
+            }
+            else{
+                finales.add(semiFinal.get(i+1));
+                
+            }
+        }
+        definirCampeon();
+    }
+    
+    private void definirCampeon() throws FileNotFoundException{
+        
+        Combate combate=new Combate(finales.get(0), finales.get(1));
+        combate.CombateMaquinaVSMaquina(true);
+        if (combate.haGanadoElCombate(finales.get(0)).equals("victoria")) {
+            podio.add(finales.get(0));
+            podio.add(finales.get(1));
+        }
+        else{
+            podio.add(finales.get(1));
+            podio.add(finales.get(0));
+        }
+    }
+    
+    
+    public void enfrentarseALosMasFuertesODebiles(ArrayList<Equipo> clasificados, String nombre, boolean debiles){
+               
+        Equipo conejilloDeIndias;
+        
+        for (int i = 0; i < 16; i++) {
+            if (clasificados.get(i).equals(nombre)) {
+                conejilloDeIndias=clasificados.get(i);
+            }
+        }
+        
+        ArrayList estadisticas = new ArrayList<>();
+        for (int i = 0; i < 15; i++) {
+            estadisticas.add(clasificados.get(i).getEstadisticas());
+        }
+        if (debiles) {
+            Collections.sort(estadisticas);
+        }
+        else{
+            Collections.sort(estadisticas,Collections.reverseOrder() );
+        }        
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 15; j++) {
+                if ((double) (estadisticas.get(i))==clasificados.get(j).getEstadisticas()) {
+                    //IMPRIMIR POR PANTALLA EL NOMBRE DEL OPONENTE
+                    System.out.println("Se enfrentaria primero a: "+clasificados.get(j));
+                }
+            }
+        }
+    }
+
+    public ArrayList<Equipo> getPodio() {
+        return podio;
+    }
+
+    public ArrayList<Equipo> getCuartosDeFinal() {
+        return cuartosDeFinal;
+    }
+
+    public ArrayList<Equipo> getSemiFinal() {
+        return semiFinal;
+    }
+
+    public ArrayList<Equipo> getFinales() {
+        return finales;
+    }
+    
+    
+    
+    
+}
