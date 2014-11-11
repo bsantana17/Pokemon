@@ -1,0 +1,74 @@
+package controladores;
+
+import java.io.FileNotFoundException;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import modelo.Equipo;
+import modelo.Campeonato;
+
+public class ControladorCampeonato {
+    
+    public Campeonato eliminatorias = new campeonato();
+
+	
+    //Metodo que inicializa el arreglo octavosDeFinal con equipos seleccionados al azar
+   
+   public void asignarCampeonatoAleatorio() throws FileNotFoundException, SQLException{
+//ARRAGLAR ESTA WEA!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+        int numeroRandom;
+        ControladorEquipo controlEquipo = new ControladorEquipo();
+        ArrayList<Equipo> todosLosEquipos=new ArrayList<>();
+        //aqui ira con los entrenadores asignados listos
+		
+        }
+    }
+             
+    
+    public void asignarCampeonatoArreglado(Equipo equipoArreglado, ArrayList<Equipo> clasificados, String situacion){
+        ArrayList<Double> estadisticas = new ArrayList<>();
+        ArrayList<Equipo> equiposOrdenados=new ArrayList<>();
+        equiposOrdenados.add(equipoArreglado);
+        for (int i = 0; i < clasificados.size(); i++) {
+            estadisticas.add(clasificados.get(i).getEstadisticas());
+        }        
+        if (situacion.equals("VsFuertes")) {
+            Comparator<Double> comparador = Collections.reverseOrder();
+            Collections.sort(estadisticas, comparador);
+        }
+        if (situacion.equals("VsDebiles")) {
+            Collections.sort(estadisticas);
+        }
+        for (int i = 0; i < estadisticas.size(); i++) {
+            for (int j = 0; j < clasificados.size(); j++) {
+                if (estadisticas.get(i)==clasificados.get(j).getEstadisticas()) {
+                    equiposOrdenados.add(clasificados.get(j));
+                    clasificados.get(j).setEstadisticas(-1);
+                }
+            }
+        }        
+		for (int i = 0; i < equiposOrdenados.size(); i++) {
+            eliminatorias.primeraRonda.add(equiposOrdenados.get(i));
+        }
+		for (int i = 0; i < 32; i++) {
+            eliminatorias.octavosDeFinal.add(equiposOrdenados.get(i));
+        }
+        for (int i = 0; i < 16; i+=2) {
+            eliminatorias.cuartosDeFinal.add(equiposOrdenados.get(i));
+        }
+        for (int i = 0; i < 8; i+=2) {
+            eliminatorias.semiFinal.add(equiposOrdenados.get(i));
+        }
+        for (int i = 0; i < 4; i+=2) {
+            eliminatorias.finales.add(equiposOrdenados.get(i));
+        }
+        
+        eliminatorias.podio.add(equiposOrdenados.get(0));
+        eliminatorias.podio.add(eliminatorias.semiFinal.get(3));
+        eliminatorias.podio.add(eliminatorias.semiFinal.get(2));
+        
+    }
+    
+}
